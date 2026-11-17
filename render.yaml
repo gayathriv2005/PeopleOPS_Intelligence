@@ -1,0 +1,71 @@
+services:
+  - type: web
+    name: peopleops-intelligence
+    env: python
+    region: singapore
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python backend/server.py
+    envVars:
+      # GreytHR: read by the Work location card, which fetches swipes at runtime
+      - key: GREYTHR_DOMAIN
+        sync: false
+      - key: GREYTHR_USERNAME
+        sync: false
+      - key: GREYTHR_PASSWORD
+        sync: false
+      - key: TEAMS_TENANT_ID
+        sync: false
+      - key: TEAMS_CLIENT_ID
+        sync: false
+      - key: TEAMS_CLIENT_SECRET
+        sync: false
+      - key: GRAPH_CLIENT_ID
+        sync: false
+      - key: GRAPH_CLIENT_SECRET
+        sync: false
+      - key: GROQ_API_KEY
+        sync: false
+      - key: PEOPLEOPS_USERNAME
+        sync: false
+      - key: PEOPLEOPS_PASSWORD
+        sync: false
+      # Shared password for the role test logins in data/test-accounts.json (unset = disabled)
+      - key: PEOPLEOPS_TEST_PASSWORD
+        sync: false
+      # Password for the "demo" login, which shows only the fake data in data/demo/ (unset = disabled)
+      - key: PEOPLEOPS_DEMO_PASSWORD
+        sync: false
+      - key: ALLOWED_EMAILS
+        sync: false
+      - key: SSO_REDIRECT_URI
+        sync: false
+
+  - type: cron
+    name: peopleops-daily-refresh
+    env: python
+    region: singapore
+    schedule: "30 3 * * *"  # 9:00 AM IST (UTC+5:30) every day
+    buildCommand: pip install -r requirements.txt
+    startCommand: python scripts/cron_refresh.py
+    envVars:
+      - key: TEAMS_TENANT_ID
+        sync: false
+      - key: TEAMS_CLIENT_ID
+        sync: false
+      - key: TEAMS_CLIENT_SECRET
+        sync: false
+      - key: GRAPH_CLIENT_ID
+        sync: false
+      - key: GRAPH_CLIENT_SECRET
+        sync: false
+      - key: GROQ_API_KEY
+        sync: false
+      - key: PEOPLEOPS_USERNAME
+        sync: false
+      - key: PEOPLEOPS_PASSWORD
+        sync: false
+      - key: ALLOWED_EMAILS
+        sync: false
+      - key: SSO_REDIRECT_URI
+        sync: false

@@ -1,0 +1,114 @@
+/* "Work location" card — Attendance page. All classes are prefixed wl- so nothing else is affected. */
+.wl-card { margin-bottom: 16px; display: grid; gap: 18px; }
+.wl-head { display: flex; flex-wrap: wrap; gap: 14px 24px; justify-content: space-between; align-items: flex-end; }
+.wl-head h2 { margin: 0; }
+.wl-sub { margin: 4px 0 0; color: var(--muted, #5a6b82); font-size: .82rem; max-width: 62ch; }
+.wl-days { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.wl-seg { display: inline-flex; background: #eef3f9; border-radius: 999px; padding: 3px; }
+.wl-seg button { border: 0; background: transparent; color: var(--muted, #5a6b82); font: inherit; font-size: .84rem; font-weight: 600; padding: 6px 14px; border-radius: 999px; cursor: pointer; }
+.wl-seg button[aria-pressed="true"] { background: var(--teal, #14B8A6); color: #fff; }
+.wl-nav { display: inline-flex; align-items: center; gap: 6px; }
+.wl-nav button { width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--line, #e2e8f0); background: #fff; color: var(--ink, #0f1c2e); font-size: 1.05rem; line-height: 1; cursor: pointer; }
+.wl-nav button:disabled { opacity: .35; cursor: default; }
+.wl-period { min-width: 150px; text-align: center; font-weight: 700; font-variant-numeric: tabular-nums; }
+.wl-date { width: auto; min-width: 0; border: 1px solid var(--line, #e2e8f0); border-radius: 999px; padding: 5px 10px; font: inherit; font-size: .82rem; background: #fff; color: var(--ink, #0f1c2e); }
+.wl-card button:focus-visible, .wl-card input:focus-visible { outline: 2px solid var(--teal, #14B8A6); outline-offset: 2px; }
+
+.wl-office { --wl-fg: #0F766E; --wl-bg: #effaf8; --wl-edge: #bfe9e2; }
+.wl-wfh    { --wl-fg: #1d4ed8; --wl-bg: #eff4ff; --wl-edge: #c9d8fb; }
+.wl-absent { --wl-fg: #b91c1c; --wl-bg: #fef2f2; --wl-edge: #f7cdcd; }
+.wl-leave  { --wl-fg: #6d28d9; --wl-bg: #f5f0ff; --wl-edge: #ddd0fb; }
+
+.wl-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px; }
+.wl-tile { font: inherit; text-align: left; cursor: pointer; display: grid; gap: 2px; padding: 12px 14px; border-radius: 10px; border: 1px solid var(--wl-edge); background: var(--wl-bg); color: var(--ink, #0f1c2e); }
+.wl-tile strong { font-size: 1.7rem; line-height: 1.15; font-variant-numeric: tabular-nums; color: var(--wl-fg); }
+.wl-tile span { font-size: .84rem; font-weight: 600; }
+.wl-tile small { font-size: .76rem; color: var(--muted, #5a6b82); }
+.wl-tile[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--wl-fg); }
+
+.wl-bar { display: flex; height: 10px; border-radius: 999px; overflow: hidden; background: #eef3f9; }
+.wl-bar i { display: block; background: var(--wl-fg); }
+
+.wl-note { display: flex; gap: 8px; align-items: flex-start; background: #f4f7fb; border: 1px solid var(--line, #e2e8f0); border-radius: 8px; padding: 9px 12px; font-size: .84rem; color: var(--muted, #5a6b82); }
+.wl-note b { color: var(--ink, #0f1c2e); }
+
+.wl-tools { display: flex; flex-wrap: wrap; gap: 10px; justify-content: space-between; align-items: center; }
+.wl-tools h3 { margin: 0; font-size: .95rem; }
+
+.wl-scroll { overflow-x: auto; }
+.wl-table { border-collapse: collapse; width: 100%; font-size: .88rem; }
+.wl-table th, .wl-table td { text-align: left; padding: 9px 10px; border-top: 1px solid var(--line, #e2e8f0); vertical-align: middle; }
+.wl-table thead th { border-top: 0; font-size: .74rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted, #5a6b82); font-weight: 700; }
+.wl-nm b { display: block; font-weight: 600; }
+.wl-nm small { color: var(--muted, #5a6b82); font-variant-numeric: tabular-nums; }
+.wl-dim { color: var(--muted, #5a6b82); }
+.wl-src { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+.wl-src svg { width: 15px; height: 15px; flex: none; color: var(--muted, #5a6b82); }
+.wl-io { display: grid; gap: 1px; }
+.wl-io b { font-weight: 600; font-variant-numeric: tabular-nums; }
+.wl-io small { font-size: .74rem; color: var(--muted, #5a6b82); white-space: nowrap; }
+.wl-chip { display: inline-block; font-size: .78rem; font-weight: 700; padding: 3px 10px; border-radius: 999px; white-space: nowrap; background: var(--wl-bg); color: var(--wl-fg); }
+
+.wl-more { margin-top: 10px; border: 1px solid var(--line, #e2e8f0); background: #fff; color: var(--ink, #0f1c2e); border-radius: 999px; padding: 5px 14px; font: inherit; font-size: .82rem; font-weight: 600; cursor: pointer; }
+.wl-status { margin: 0; padding: 28px 8px; text-align: center; color: var(--muted, #5a6b82); }
+.wl-status button { margin-left: 8px; border: 1px solid var(--line, #e2e8f0); background: #fff; border-radius: 999px; padding: 5px 14px; font: inherit; font-weight: 600; cursor: pointer; }
+
+/* Check-out fix: live "still in office" marker and hours worked */
+.wl-live { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; color: #0F766E; }
+.wl-live::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: #14B8A6; box-shadow: 0 0 0 3px rgba(20, 184, 166, .2); }
+.wl-hrs { font-size: .74rem; font-weight: 700; color: var(--ink, #0f1c2e); background: #eef3f9; border-radius: 999px; padding: 1px 7px; margin-left: 5px; font-variant-numeric: tabular-nums; }
+
+/* Search at the top of the card */
+.wl-find { position: relative; display: flex; align-items: center; gap: 8px; border: 1px solid var(--line, #e2e8f0); border-radius: 12px; background: #fff; padding: 0 12px; }
+.wl-find:focus-within { border-color: var(--teal, #14B8A6); box-shadow: 0 0 0 3px rgba(20, 184, 166, .15); }
+.wl-find svg { width: 18px; height: 18px; color: var(--muted, #5a6b82); flex: none; }
+.wl-find input { flex: 1; width: auto; min-width: 0; border: 0; outline: 0; box-shadow: none; padding: 11px 0; font: inherit; font-size: .95rem; background: transparent; color: var(--ink, #0f1c2e); }
+.wl-drop { position: absolute; z-index: 20; top: calc(100% + 6px); left: 0; right: 0; background: #fff; border: 1px solid var(--line, #e2e8f0); border-radius: 12px; box-shadow: 0 12px 32px rgba(15, 28, 46, .14); padding: 4px; max-height: 340px; overflow-y: auto; }
+.wl-sres { display: flex; justify-content: space-between; align-items: center; gap: 12px; width: 100%; border: 0; background: transparent; text-align: left; padding: 8px 10px; border-radius: 8px; cursor: pointer; color: var(--ink, #0f1c2e); font: inherit; }
+.wl-sres b { display: block; font-weight: 600; }
+.wl-sres small { color: var(--muted, #5a6b82); font-size: .78rem; }
+.wl-sres:hover, .wl-sres.wl-on, .wl-sres:focus-visible { background: #eef3f9; }
+.wl-sres-empty { margin: 0; padding: 10px 12px; color: var(--muted, #5a6b82); font-size: .86rem; }
+.wl-clear { border: 0; background: none; color: var(--teal, #14B8A6); font: inherit; font-weight: 700; font-size: .82rem; cursor: pointer; padding: 0; }
+
+/* One employee picked from the search */
+.wl-focus-bar { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; font-size: .84rem; color: var(--muted, #5a6b82); }
+.wl-back { border: 1px solid var(--line, #e2e8f0); background: #fff; color: var(--ink, #0f1c2e); border-radius: 999px; padding: 6px 14px; font: inherit; font-weight: 600; font-size: .84rem; cursor: pointer; }
+
+/* Clickable rows open the day detail under the row */
+.wl-row { cursor: pointer; }
+.wl-row:hover td { background: #f8fafc; }
+.wl-row.wl-sel td { background: #f0faf8; }
+.wl-caret { float: left; width: 14px; margin-left: -4px; color: var(--muted, #5a6b82); transition: transform .15s; }
+.wl-row.wl-sel .wl-caret { transform: rotate(90deg); color: var(--teal, #14B8A6); }
+.wl-nm b, .wl-nm small { margin-left: 14px; }
+.wl-table tr.wl-detail-row td { background: #f0faf8; border-top: 0; padding: 0 10px 14px; }
+.wl-hint { margin: 0; font-size: .78rem; color: var(--muted, #5a6b82); }
+@media (prefers-reduced-motion: reduce) { .wl-caret { transition: none; } }
+
+/* Day detail */
+.wl-detail { background: #fff; border: 1px solid #bfe9e2; border-radius: 10px; padding: 14px 16px; display: grid; gap: 14px; }
+.wl-detail-big { border-color: var(--line, #e2e8f0); padding: 18px 20px; }
+.wl-d-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+.wl-d-head .eyebrow { margin-bottom: 2px; }
+.wl-d-head h3 { margin: 0; font-size: 1rem; }
+.wl-detail-big .wl-d-head h3 { font-size: 1.2rem; }
+.wl-d-head h3 .wl-chip { margin-left: 6px; vertical-align: 3px; }
+.wl-d-head h3 small { display: block; font-weight: 500; color: var(--muted, #5a6b82); font-size: .8rem; margin-top: 2px; }
+.wl-d-close { flex: none; border: 1px solid var(--line, #e2e8f0); background: #fff; border-radius: 50%; width: 30px; height: 30px; font-size: 1.1rem; line-height: 1; cursor: pointer; color: var(--muted, #5a6b82); }
+.wl-tl-wrap { overflow-x: auto; }
+.wl-tl { width: 100%; min-width: 560px; height: auto; display: block; overflow: visible; }
+.wl-tl-grid { stroke: var(--line, #e2e8f0); }
+.wl-tl-axis { fill: var(--muted, #5a6b82); font-size: 11px; font-variant-numeric: tabular-nums; }
+.wl-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
+.wl-step { border: 1px solid var(--line, #e2e8f0); border-radius: 8px; padding: 10px 12px; display: grid; gap: 4px; align-content: start; }
+.wl-step h4 { margin: 0; font-size: .74rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted, #5a6b82); }
+.wl-step b { font-size: 1.05rem; font-variant-numeric: tabular-nums; }
+.wl-step p { margin: 0; font-size: .8rem; color: var(--muted, #5a6b82); }
+.wl-nodata { margin: 0; padding: 16px; border-radius: 8px; background: #eef3f9; color: var(--muted, #5a6b82); font-size: .9rem; }
+.wl-nodata b { color: var(--ink, #0f1c2e); }
+
+/* The dashboard styles every input and table cell; keep those rules out of the search box and the detail. */
+.wl-card .wl-find input, .wl-card .wl-find input:focus { border: 0; outline: 0; box-shadow: none; background: transparent; border-radius: 0; height: auto; }
+.wl-table tr.wl-detail-row td, .wl-detail, .wl-detail * { white-space: normal; }
+.wl-detail .wl-step p, .wl-detail .wl-nodata { overflow-wrap: anywhere; }

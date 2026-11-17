@@ -1,0 +1,787 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>PeopleOPS Intelligence</title>
+    <link rel="icon" type="image/svg+xml" href="peopleops-icon.svg">
+    <link rel="stylesheet" href="styles.css?v=20261005-team2">
+    <link rel="stylesheet" href="leave-types.css?v=20260921-leavetypes">
+    <link rel="stylesheet" href="work-location.css?v=20260925-search">
+    <link rel="stylesheet" href="overview.css?v=20260929-greet2">
+  </head>
+  <body style="visibility:hidden">
+    <main class="app-shell">
+      <aside class="rail" aria-label="Data source status">
+        <div class="brand-mark">
+          <img src="peopleops-logo.svg" class="brand-logo" alt="PeopleOps Intelligence" style="width:152px;height:auto;display:block;">
+        </div>
+        <div class="rail-nav-label">Main</div>
+        <!-- Role-based nav: company-only / reports-only / are toggled by the scope-* class app.js puts on <body>. -->
+        <button class="rail-item active" data-view="overview" title="Overview">
+          <svg class="rail-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          Overview
+        </button>
+        <button class="rail-item" data-view="kpi" title="KPI">
+          <svg class="rail-icon" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          KPI
+        </button>
+        <button class="rail-item" data-view="people" title="Employees">
+          <svg class="rail-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          Employees
+        </button>
+        <button class="rail-item" data-view="attendance" title="Attendance">
+          <svg class="rail-icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Attendance
+        </button>
+        <button class="rail-item" data-view="mtm" title="MTM Members">
+          <svg class="rail-icon" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+          MTM Members
+        </button>
+        <div class="rail-nav-label">Data Sources</div>
+        <button class="rail-item" data-view="teams" title="Teams">
+          <svg class="rail-icon" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Teams
+        </button>
+        <button class="rail-item" data-view="projects" title="Projects">
+          <svg class="rail-icon" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+          Projects
+        </button>
+        <button class="rail-item" data-view="github" title="GitHub">
+          <svg class="rail-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8.56 2.75c4.37 6.03 6.02 9.42 8.03 17.72m2.54-15.38c-3.72 4.35-8.94 5.66-16.88 5.85m19.5 1.9c-3.5-.93-6.63-.82-8.94 0-2.58.92-5.01 2.86-7.44 6.32"/></svg>
+          GitHub
+        </button>
+        <button class="rail-item" data-view="graph" title="Microsoft Graph">
+          <svg class="rail-icon" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          Graph
+        </button>
+        <button class="rail-item company-only" data-view="integrations" title="Integrations">
+          <svg class="rail-icon" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+          Integrations
+        </button>
+        <div id="mtmAdminLabel" class="rail-nav-label">Admin</div>
+        <a id="mtmVerifyLink" class="rail-item" href="/verify" target="_blank" rel="noopener" title="Review and verify MTM sprint task entries">
+          <svg class="rail-icon" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          MTM Verification
+        </a>
+        <div id="railUser" class="rail-user-pill" style="display:none;">
+          <div id="railUserAvatar" class="rail-user-avatar"></div>
+          <div class="rail-user-info">
+            <div id="railUserName" class="rail-user-name"></div>
+            <div id="railUserType" class="rail-user-type"></div>
+          </div>
+          <div class="rail-user-menu-wrap">
+            <button class="rail-user-dots" id="railUserDotsBtn" title="Options">&#8942;</button>
+            <div class="rail-user-menu" id="railUserMenu">
+              <button onclick="logout()">Sign out</button>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <section class="workspace">
+        <section id="overview" class="view active-view ovp">
+          <!-- Overview: exact layout of "PeopleOps – Prototype 1", drawn by renderOverviewPrototype() in app.js. -->
+          <div class="ovp-top">
+            <div class="ovp-hello">
+              <h1 id="ovGreeting">Good morning 👋</h1>
+              <p id="ovTodayLine"></p>
+            </div>
+            <div class="ovp-controls">
+              <label class="ovp-search">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+                <input id="ovSearch" type="search" placeholder="Search a person, team or project…" aria-label="Search a person, team or project" autocomplete="off">
+              </label>
+              <label class="ovp-switch"><input type="checkbox" id="ovInterns" checked><span class="ovp-track" aria-hidden="true"></span>Show interns</label>
+              <div class="ovp-period">
+                <input id="ovMonth" type="month" aria-label="Month to show">
+                <button id="ovLoadMonth" type="button">Load month <span class="ovp-arr" aria-hidden="true">→</span></button>
+              </div>
+              <button class="ovp-icon-btn company-only" id="refreshDataBtn" type="button" title="Refresh data: pull the latest from Worklogix, GreytHR, Teams, GitHub and Graph" aria-label="Refresh data">↻</button>
+            </div>
+          </div>
+          <div id="ovProto"></div>
+          <!-- Group drawer (Engagement rows open it); outside the hidden holder so it can show. -->
+          <div id="bandDrawerOverlay" class="teams-drawer-overlay" hidden onclick="closeBandDrawer()"></div>
+          <aside id="bandDrawer" class="teams-drawer" hidden>
+            <button class="teams-drawer-close" onclick="closeBandDrawer()">&#x2715;</button>
+            <div id="bandDrawerContent"></div>
+          </aside>
+
+          <!-- Previous Overview content, kept hidden: other pages and app.js still use these elements
+               (global filters, month picker, export, drawers). Not shown in the prototype layout. -->
+          <div class="ovp-legacy" hidden>
+          <div class="gradient-panel">
+            <header class="hero gradient-hero">
+              <div class="gradient-hero-brand">
+                <img src="peopleops-icon.svg" class="gradient-hero-mark" width="46" height="67" alt="" aria-hidden="true" style="filter:brightness(1.8) saturate(0.6);">
+                <div>
+                  <h1>PeopleOps Intelligence</h1>
+                  <p class="hero-copy">Workforce intelligence across attendance, collaboration, delivery, and output</p>
+                </div>
+              </div>
+              <div class="gradient-hero-right">
+                <div class="gradient-hero-meta">
+                  <div><strong id="heroGeneratedLabel">—</strong><span>Generated</span></div>
+                  <div><strong id="heroPeriodLabel">—</strong><span>Period</span></div>
+                </div>
+                <div class="hero-actions">
+                  <div class="export-dropdown" id="exportDropdown">
+                    <button class="button export-btn" id="exportBtn">Export ▾</button>
+                    <div class="export-menu" id="exportMenu">
+                      <button id="exportCsv">CSV (.csv)</button>
+                      <button id="exportXlsx">Excel (.xlsx)</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </header>
+
+            <section class="controls gradient-controls" aria-label="Dashboard controls">
+              <label class="pill-field-label search-field">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+                <input id="searchInput" type="search" placeholder="Name, ID, team, designation">
+              </label>
+              <div class="pill-field-label band-select-wrap" id="bandFilter">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+                <button type="button" class="band-select-trigger" aria-haspopup="listbox" aria-expanded="false">
+                  <span class="band-trigger-dot"></span>
+                  <span class="band-select-label">All performance bands</span>
+                  <svg class="band-select-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                </button>
+                <ul class="band-select-panel" role="listbox" hidden></ul>
+              </div>
+              <label class="pill-field-label">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8"/></svg>
+                <select id="teamFilter">
+                  <option value="all">All teams</option>
+                </select>
+              </label>
+              <label class="pill-switch-label">
+                <input type="checkbox" id="internToggle" checked>
+                <span>Show Interns</span>
+              </label>
+              <label class="pill-field-label">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 11 3 3L22 4M2 12l3 3L15 5"/></svg>
+                <select id="confidenceFilter">
+                  <option value="0">Any confidence</option>
+                  <option value="50">50% and above</option>
+                  <option value="75">75% and above</option>
+                  <option value="100">Full confidence</option>
+                </select>
+              </label>
+            </section>
+          </div>
+
+          <div class="overview-heading">
+            <div>
+              <p class="eyebrow">Executive dashboard</p>
+              <h2>Workforce Performance Overview</h2>
+              <p>Live people, delivery, attendance and collaboration signals in one decision-ready view.</p>
+            </div>
+            <div class="overview-heading-meta">
+              <span class="overview-live-dot"></span>
+              <span>Daily refresh · Teams live</span>
+            </div>
+          </div>
+
+          <div id="overviewLiveWidget" class="panel today-brief" hidden>
+            <div class="brief-head">
+              <span class="brief-dot"></span>
+              <span class="brief-title">Today Briefing</span>
+              <span class="brief-date" id="briefDate"></span>
+              <a class="live-widget-viewall" id="overviewLiveWidgetViewAll">View live meetings in Graph →</a>
+            </div>
+            <div class="brief-rows">
+              <div class="brow" id="briefLiveRow"></div>
+              <div class="brow" id="briefOutRow"></div>
+              <div class="brow" id="briefOverdueRow"></div>
+            </div>
+          </div>
+
+          <!-- Global attendance month picker -->
+          <div class="panel" style="margin-bottom:16px;">
+            <div class="panel-head">
+              <div>
+                <p class="eyebrow">Attendance period</p>
+                <strong id="globalMonthLabel" style="font-size:1rem;font-weight:700;">Loading…</strong>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <input type="month" id="globalMonthInput" style="padding:6px 10px;border:1px solid var(--line);border-radius:8px;font-size:0.85rem;background:white;color:var(--ink);">
+                <button id="globalMonthBtn" class="button" type="button">Load month</button>
+              </div>
+            </div>
+            <div id="globalMonthStatus" style="font-size:0.82rem;margin-top:6px;"></div>
+            <div id="taraAvailableMonths" style="display:none;font-size:0.78rem;margin-top:4px;color:var(--muted);"></div>
+          </div>
+
+          <div id="totalEmployeeBadge" class="total-employee-badge"></div>
+          <div id="metricGrid" class="metric-grid"></div>
+          <div id="bandEmployeesPanel" class="department-employees-panel" hidden></div>
+          <div id="teamsInsightRow" class="teams-insight-row"></div>
+          <div class="overview-section-label" style="margin-top:24px">
+            <div>
+              <p class="eyebrow">Employee Insight Quadrants</p>
+              <h2>Engagement & Output Matrix</h2>
+            </div>
+            <span>Click a quadrant to see employees</span>
+          </div>
+          <div id="quadrantAlertBanner"></div>
+          <div id="quadrantGrid" class="band-summary quadrant-grid"></div>
+          <article class="panel donut-panel overview-team-health">
+            <div class="donut-wrap">
+              <div class="donut-canvas-wrap">
+                <p class="eyebrow">Performance distribution</p>
+                <h2>Team Health</h2>
+                <canvas id="donutChart"></canvas>
+              </div>
+              <div id="donutLegend" class="donut-legend"></div>
+            </div>
+            <div id="donutInsufficientNote"></div>
+          </article>
+          <!-- Department Performance + Data Quality -->
+          <div class="overview-analytics-label overview-section-label">
+            <div>
+              <p class="eyebrow">Organizational analytics</p>
+              <h2>Department &amp; Data Quality</h2>
+            </div>
+          </div>
+          <div class="dashboard-grid">
+            <!-- Left: Department KPI chart -->
+            <article class="panel">
+              <div class="panel-head">
+                <div>
+                  <p class="eyebrow">Department performance</p>
+                  <h2>Overall KPI by Department</h2>
+                </div>
+                <span id="filteredCount" class="pill"></span>
+              </div>
+              <div id="scatterChart"></div>
+            </article>
+            <!-- Right: Integration Coverage + KPI Weights stacked -->
+            <div class="dept-right-stack">
+              <article class="panel">
+                <div class="panel-head">
+                  <div>
+                    <p class="eyebrow">Source fusion</p>
+                    <h2>Integration Coverage</h2>
+                  </div>
+                </div>
+                <div id="sourceCoverage"></div>
+              </article>
+              <article class="panel">
+                <div class="panel-head">
+                  <div>
+                    <p class="eyebrow">Score formula</p>
+                    <h2>KPI Weights</h2>
+                  </div>
+                </div>
+                <div id="weightBars"></div>
+              </article>
+            </div>
+          </div>
+          <article class="panel" style="margin-top:16px;">
+            <div class="panel-head">
+              <div>
+                <p class="eyebrow">Attention required</p>
+                <h2>Employee Alerts</h2>
+              </div>
+            </div>
+            <div id="alertsPanel"></div>
+          </article>
+          <div id="departmentTooltip" hidden></div>
+          <div id="departmentEmployeesPanel" hidden></div>
+          </div>
+        </section>
+
+        <section id="myteam" class="view">
+          <!-- Team leads / managers: a summary of their own people, in place of the company-wide
+               Overview (which the server restricts to HR/Admin). Drawn by renderMyTeam() in app.js. -->
+          <article class="panel myteam-panel" id="myTeamContent"></article>
+        </section>
+
+        <section id="kpi" class="view">
+          <div class="kpi-layout kpx-layout">
+            <div class="kpx-toolbar">
+              <span data-scope-count></span>
+              <div class="kpi-head-actions">
+                <span id="kpiRefreshStatus" class="pill"></span>
+                <span id="kpiTeamCount" class="pill"></span>
+                <button id="clearKpiTeam" class="button secondary-button" type="button">All teams</button>
+                <button id="refreshKpi" class="button company-only" type="button">Refresh KPI</button>
+              </div>
+            </div>
+
+            <div id="kpiSignalSummary" class="kpx-grid"></div>
+
+            <article class="kpx-card">
+              <h3>Team-wise KPI <span id="kpiTeamSub" class="kpx-sub"></span></h3>
+              <div id="kpiTeamBars"></div>
+            </article>
+
+            <article class="kpx-card">
+              <h3>KPI weights</h3>
+              <div id="kpiWeights"></div>
+            </article>
+          </div>
+        </section>
+
+        <section id="attendance" class="view">
+          <div id="leaveTypesCard"></div>
+          <div id="workLocationCard"></div>
+          <div id="attendanceTeamRollup"></div>
+        </section>
+
+        <section id="teams" class="view">
+          <article class="panel table-panel">
+            <div class="panel-head">
+              <div>
+                <p class="eyebrow">Microsoft Teams activity</p>
+                <h2>Teams Data Register</h2>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;">
+                <span id="teamsRefreshLabel" class="refresh-pill"></span>
+                <button class="button refresh-btn" onclick="autoRefreshTeams()">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.5 9a9 9 0 0114.85-3.36L23 10M1 14l4.65 4.36A9 9 0 0020.5 15"/></svg>
+                  Refresh now
+                </button>
+              </div>
+            </div>
+
+            <div class="presence-card">
+              <div class="presence-top">
+                <strong>Live Presence</strong>
+                <span id="presenceSummary"></span>
+              </div>
+              <div class="comp-bar" id="compBar"></div>
+              <div class="legend-row" id="teamsStatusBar"></div>
+            </div>
+
+            <div class="search-row" id="teamsSearchRow">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input id="teamsSearch" type="search" placeholder="Search by name, ID, team, or designation…" autocomplete="off">
+              <button class="clear-btn" id="teamsSearchClear" type="button" title="Clear">✕</button>
+            </div>
+
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Employee</th>
+                    <th>Designation</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="teamsTable"></tbody>
+              </table>
+            </div>
+          </article>
+
+          <!-- Teams presence detail drawer -->
+          <div id="teamsDrawerOverlay" class="teams-drawer-overlay" hidden onclick="closeTeamsPanel()"></div>
+          <aside id="teamsDrawer" class="teams-drawer" hidden>
+            <button class="teams-drawer-close" onclick="closeTeamsPanel()">✕</button>
+            <div id="teamsDrawerContent"></div>
+          </aside>
+        </section>
+
+        <section id="people" class="view">
+          <div class="kpx-layout">
+            <div class="kpx-toolbar"><span data-scope-count></span></div>
+            <div id="peopleStatStrip" class="kpx-grid"></div>
+            <article id="leadershipStrip" class="kpx-card" hidden></article>
+            <article class="kpx-card">
+              <h3>Ranked KPI register <span class="kpx-sub">· tasks shown as completed/total</span></h3>
+              <div class="kpx-chips" id="peopleBandChips">
+                <button type="button" class="kpx-chip on" data-band="All">All</button>
+                <button type="button" class="kpx-chip" data-band="Excellent">Excellent</button>
+                <button type="button" class="kpx-chip" data-band="Good">Good</button>
+                <button type="button" class="kpx-chip" data-band="Watch">Watch</button>
+                <button type="button" class="kpx-chip" data-band="At risk">At risk</button>
+                <span class="pm-sep" aria-hidden="true"></span>
+                <button type="button" class="kpx-chip pm-chip" data-band="MTM" title="Open the MTM Members page">◆ MTM members <b id="peopleMtmCount"></b> →</button>
+                <input id="peopleSearchInput" class="kpx-search" type="search" placeholder="Search name, ID, team, designation">
+              </div>
+              <div id="peopleTable"></div>
+              <details id="awaitingDataSection" class="kpx-awaiting" hidden>
+                <summary>Awaiting data · <span id="awaitingDataBadge"></span> <span class="kpx-sub">(no Worklogix tasks or attendance link yet)</span></summary>
+                <div id="awaitingDataBody"></div>
+              </details>
+            </article>
+          </div>
+        </section>
+
+        <section id="mtm" class="view">
+          <div id="mtmPage" class="kpx-layout"></div>
+        </section>
+
+        <section id="projects" class="view">
+          <div id="projectGrid"></div>
+        </section>
+
+        <dialog id="projDetailDialog">
+          <div class="projd-wrap">
+            <div class="projd-header">
+              <div class="projd-header-main">
+                <div id="projd-ring" class="projd-ring"><div class="projd-ring-inner" id="projd-ring-label"></div></div>
+                <div class="projd-header-text">
+                  <h2 id="projd-title" class="projd-title"></h2>
+                  <div id="projd-meta" class="projd-meta"></div>
+                </div>
+              </div>
+              <button class="dialog-close" onclick="document.getElementById('projDetailDialog').close()">&times;</button>
+            </div>
+            <div id="projd-stats" class="projd-stats"></div>
+            <div id="projd-body"></div>
+          </div>
+        </dialog>
+
+        <section id="github" class="view">
+          <div class="kpx-layout gh-v2">
+            <div class="gh-v2-head">
+              <div>
+                <p class="eyebrow">Codework.ai · GitHub Projects</p>
+                <h2>GitHub</h2>
+                <p class="kpx-sub">Tasks, assignees and completion across all active GitHub Projects. <span id="ghPeriodLabel"></span></p>
+              </div>
+              <div class="gh-header-actions">
+              <span class="month-picker">
+                <svg class="cal-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                <select id="ghMonthPicker"></select>
+                <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+              </span>
+              <span id="ghRefreshLabel" class="refresh-pill"></span>
+              <button class="button refresh-btn company-only" onclick="refreshGitHub()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.5 9a9 9 0 0114.85-3.36L23 10M1 14l4.65 4.36A9 9 0 0020.5 15"/></svg>
+                Refresh now
+              </button>
+              </div>
+            </div>
+            <div id="ghSummaryCards" class="kpx-grid"></div>
+            <div id="ghAttentionBanner"></div>
+            <div class="kpx-chips gh-v2-tabs">
+              <button type="button" class="kpx-chip gh-tab gh-tab--active on" data-tab="projects" onclick="switchGhTab('projects',this)">Projects</button>
+              <button type="button" class="kpx-chip gh-tab" data-tab="contributors" onclick="switchGhTab('contributors',this)">Contributors</button>
+            </div>
+            <div id="gh-tab-projects" class="gh-tab-panel">
+              <div id="ghControlsRow"></div>
+              <div id="ghProjectsList"></div>
+            </div>
+            <div id="gh-tab-contributors" class="gh-tab-panel" hidden>
+              <div id="ghContribControlsRow"></div>
+              <div id="ghContributors"></div>
+            </div>
+          </div>
+        </section>
+
+        <section id="graph" class="view">
+          <style>
+            #graph { --g-blue:#2563eb; --g-ink:#172033; --g-muted:#64748b; --g-line:#e2e8f0; --g-bg:#f6f8fc; color:var(--g-ink); }
+            #graph button,#graph select,#graph input { font:inherit; }
+            #graph button:focus-visible,#graph a:focus-visible,#graph input:focus-visible,#graph select:focus-visible { outline:3px solid #93c5fd; outline-offset:2px; }
+            #graph .graph-command { display:flex; align-items:flex-start; justify-content:space-between; gap:24px; padding:24px 28px; border:1px solid var(--g-line); border-radius:18px; background:linear-gradient(130deg,#fff 35%,#eef4ff); box-shadow:0 8px 28px #1e3a5f0d; }
+            #graph .graph-breadcrumbs { margin-top:8px; color:var(--g-muted); font-size:13px; }
+            #graph .graph-people-search { position:relative; display:flex; align-items:center; gap:18px; margin:18px 0; padding:14px 18px; border:1px solid var(--g-line); border-radius:14px; background:#fff; }
+            #graph .graph-search-copy { display:flex; align-items:center; gap:10px; min-width:260px; }
+            #graph .graph-search-copy small { display:block; color:var(--g-muted); }
+            #graph .graph-search-icon { display:grid; place-items:center; width:34px; height:34px; border-radius:9px; background:#e8f0ff; color:var(--g-blue); font-size:22px; }
+            #graph .graph-search-field { display:flex; flex:1; gap:8px; }
+            #graph .graph-search-field input { width:100%; padding:10px 12px; border:1px solid var(--g-line); border-radius:9px; }
+            #graph .graph-employee-suggestions { position:absolute; z-index:30; top:67px; right:18px; width:min(650px,calc(100% - 36px)); padding:8px; border:1px solid var(--g-line); border-radius:12px; background:#fff; box-shadow:0 18px 45px #17203324; }
+            #graph .graph-employee-suggestions button { display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:10px; width:100%; padding:10px; border:0; border-radius:9px; background:transparent; text-align:left; cursor:pointer; }
+            #graph .graph-employee-suggestions button:hover { background:#f1f5f9; }
+            #graph .graph-employee-suggestions small { display:block; color:var(--g-muted); }
+            #graph .graph-org-eyebrow { margin:20px 0 8px; color:var(--teal); font-size:0.72rem; font-weight:800; letter-spacing:0.06em; text-transform:uppercase; }
+            #graph .graph-kpi-grid { display:grid; grid-template-columns:repeat(7,minmax(140px,1fr)); gap:12px; margin:0 0 18px; }
+            #graph .graph-kpi-icon svg { width:16px; height:16px; }
+            #graph .graph-kpi-card { position:relative; display:grid; gap:4px; min-height:132px; padding:16px; overflow:hidden; border:1px solid var(--g-line); border-radius:14px; background:#fff; color:var(--g-ink); text-align:left; cursor:pointer; transition:.2s ease; }
+            #graph .graph-kpi-card::before { content:""; position:absolute; inset:0 auto 0 0; width:4px; background:var(--accent); }
+            #graph .graph-kpi-card:hover,#graph .graph-kpi-card.active { transform:translateY(-3px); border-color:var(--accent); box-shadow:0 12px 28px #17203314; }
+            #graph .graph-kpi-card strong { font-size:26px; }
+            #graph .graph-kpi-card small { color:var(--g-muted); }
+            #graph .graph-kpi-icon { display:grid; place-items:center; width:28px; height:28px; border-radius:8px; background:color-mix(in srgb,var(--accent) 13%,white); color:var(--accent); }
+            #graph .graph-explorer { display:block; min-height:600px; border:1px solid var(--g-line); border-radius:16px; overflow:hidden; background:#fff; }
+            #graph .graph-subnav { padding:14px 10px; border-right:1px solid var(--g-line); background:#f8fafc; }
+            #graph .graph-subnav-item { width:100%; padding:11px 12px; border:0; border-radius:9px; background:transparent; color:#475569; text-align:left; cursor:pointer; }
+            #graph .graph-subnav-item:hover,#graph .graph-subnav-item.active { background:#e8f0ff; color:#174ea6; font-weight:700; }
+            #graph .graph-content { min-width:0; padding:18px; background:var(--g-bg); }
+            #graph .graph-toolbar { display:flex; align-items:center; gap:10px; margin-bottom:16px; padding:12px; border:1px solid var(--g-line); border-radius:12px; background:#fff; }
+            #graph .graph-toolbar-search { flex:1; min-width:180px; padding:9px 12px; border:1px solid var(--g-line); border-radius:8px; }
+            #graph .graph-toolbar select { padding:9px 30px 9px 10px; border:1px solid var(--g-line); border-radius:8px; background:#fff; }
+            #graph .graph-view-switch { display:flex; padding:3px; border-radius:9px; background:#eef2f7; }
+            #graph .graph-view-switch button { padding:7px 12px; border:0; border-radius:7px; background:transparent; cursor:pointer; }
+            #graph .graph-view-switch button.active { background:#fff; color:var(--g-blue); box-shadow:0 1px 5px #1720331c; }
+            #graph .graph-plan-grid,#graph .graph-task-grid,#graph .graph-site-grid,#graph .graph-employee-card-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:14px; }
+            #graph .graph-attn-banner { display:flex; align-items:center; gap:12px; background:linear-gradient(90deg,#fef2f2,#fff7ed); border:1px solid #fecaca; border-radius:10px; padding:12px 16px; margin-bottom:16px; font-size:0.86rem; color:#991b1b; }
+            #graph .graph-attn-icon { width:30px; height:30px; border-radius:50%; background:#fee2e2; color:#dc2626; display:grid; place-items:center; flex-shrink:0; }
+            #graph .graph-attn-icon svg { width:15px; height:15px; }
+            #graph .graph-plan-card--attn { background:linear-gradient(150deg,#fef2f2 8%,#fff 55%)!important; }
+            #graph .graph-warn-pill { display:inline-flex; align-items:center; gap:4px; font-size:0.66rem; font-weight:700; padding:2px 8px; border-radius:20px; background:#fee2e2; color:#b91c1c; margin-top:8px; }
+            #graph .graph-warn-pill svg { width:10px; height:10px; }
+            #graph .graph-dormant-group { margin-top:16px; background:#fff; border:1px solid var(--g-line); border-radius:12px; padding:16px 18px; }
+            #graph .graph-dormant-label { font-size:0.78rem; color:var(--g-muted); font-weight:600; margin-bottom:12px; display:flex; align-items:center; gap:7px; }
+            #graph .graph-dormant-label svg { width:14px; height:14px; color:#cbd5e1; }
+            #graph .graph-dormant-chips { display:flex; flex-wrap:wrap; gap:8px; }
+            #graph .graph-dormant-chip { display:inline-flex; align-items:center; padding:6px 12px; background:#f8fafc; border:1px solid var(--g-line); border-radius:20px; font-size:0.8rem; color:#78889e; }
+            #graph .graph-task-stat-strip { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:16px; }
+            #graph .graph-stat-tile { position:relative; display:grid; gap:2px; padding:14px 16px; border:1px solid var(--g-line); border-radius:12px; background:#fff; text-align:left; cursor:pointer; transition:transform .15s,box-shadow .15s,border-color .15s; }
+            #graph .graph-stat-tile:hover { transform:translateY(-2px); box-shadow:0 10px 22px #17203314; }
+            #graph .graph-stat-tile b { font-size:1.4rem; }
+            #graph .graph-stat-tile .label { font-size:0.76rem; font-weight:700; color:var(--g-ink); }
+            #graph .graph-stat-tile .sub { font-size:0.7rem; color:var(--g-muted); }
+            #graph .graph-stat-tile.stat-overdue { border-color:#fecaca; } #graph .graph-stat-tile.stat-overdue b { color:#dc2626; }
+            #graph .graph-stat-tile.stat-unassigned { border-color:#fde68a; } #graph .graph-stat-tile.stat-unassigned b { color:#d97706; }
+            #graph .graph-stat-tile.stat-orphan { border-color:#fecaca; } #graph .graph-stat-tile.stat-orphan b { color:#dc2626; }
+            #graph .graph-stat-tile.stat-priority b { color:#2563eb; }
+            #graph .graph-task-priority { font-size:0.66rem; font-weight:800; padding:2px 8px; border-radius:20px; }
+            #graph .graph-task-gap { color:#b45309; background:#fef3c7; padding:2px 8px; border-radius:20px; font-weight:700; font-size:0.72rem; }
+            #graph .graph-site-flags { display:flex; flex-wrap:wrap; gap:5px; margin-top:2px; }
+            #graph .graph-site-flags .graph-warn-pill { margin-top:0; }
+            #graph .graph-warn-pill--muted { background:#f1f5f9; color:#64748b; }
+            #graph .graph-plan-card,#graph .graph-task-card,#graph .graph-site-card,#graph .graph-employee-card { min-height:170px; padding:17px; border:1px solid var(--g-line); border-radius:14px; background:#fff; color:var(--g-ink); text-align:left; cursor:pointer; transition:transform .18s,box-shadow .18s,border-color .18s; }
+            #graph .graph-plan-card:hover,#graph .graph-task-card:hover,#graph .graph-site-card:hover,#graph .graph-employee-card:hover { transform:translateY(-3px); box-shadow:0 12px 24px #17203314; }
+            #graph .graph-plan-card { border-top:5px solid var(--plan); background:linear-gradient(150deg,color-mix(in srgb,var(--plan) 8%,white),#fff 55%); }
+            #graph .graph-plan-card h3,#graph .graph-task-card h3,#graph .graph-site-card h3 { margin:10px 0 6px; font-size:16px; }
+            #graph .graph-plan-card p,#graph .graph-task-card p,#graph .graph-site-card p { color:var(--g-muted); }
+            #graph .graph-progress { height:6px; overflow:hidden; border-radius:10px; background:#e8edf4; }
+            #graph .graph-progress span { display:block; height:100%; border-radius:inherit; background:var(--plan,var(--g-blue)); }
+            #graph .graph-task-card { border-left:4px solid #94a3b8; }
+            #graph .graph-task-card.status-completed { border-left-color:#16a34a; }
+            #graph .graph-task-card.status-in-progress { border-left-color:#2563eb; }
+            #graph .graph-task-card.status-overdue { border-left-color:#dc2626; }
+            #graph .graph-task-top,#graph .graph-task-meta { display:flex; justify-content:space-between; gap:8px; }
+            #graph .graph-task-meta { margin:16px 0 10px; color:var(--g-muted); font-size:12px; }
+            #graph .graph-status { padding:4px 8px; border-radius:999px; background:#f1f5f9; font-size:11px; font-weight:800; }
+            #graph .status-completed .graph-status { color:#15803d; background:#dcfce7; } #graph .status-in-progress .graph-status { color:#1d4ed8; background:#dbeafe; } #graph .status-overdue .graph-status { color:#b91c1c; background:#fee2e2; }
+            #graph .graph-site-card { padding:0; overflow:hidden; border-top:4px solid var(--site); }
+            #graph .graph-site-card>button { width:100%; padding:17px; border:0; background:transparent; text-align:left; cursor:pointer; }
+            #graph .graph-site-card>a { display:block; padding:11px 17px; border-top:1px solid var(--g-line); color:var(--g-blue); text-decoration:none; }
+            #graph .graph-site-icon { display:grid; place-items:center; width:36px; height:36px; border-radius:8px; background:#038387; color:#fff; font-weight:800; }
+            #graph .graph-employee-table { overflow:hidden; border:1px solid var(--g-line); border-radius:12px; background:#fff; }
+            #graph .graph-table-head,#graph .graph-employee-row { display:grid; grid-template-columns:2fr .8fr .8fr .8fr .5fr; gap:12px; align-items:center; padding:12px 15px; }
+            #graph .graph-table-head { background:#eef2f7; color:#475569; font-size:12px; font-weight:800; }
+            #graph .graph-employee-row { width:100%; border:0; border-top:1px solid var(--g-line); background:#fff; text-align:left; cursor:pointer; }
+            #graph .graph-employee-row:hover { background:#f8fbff; }
+            #graph .graph-employee-row small { display:block; color:var(--g-muted); }
+            #graph .graph-match { display:inline-block; width:max-content; padding:4px 8px; border-radius:999px; font-size:11px; font-style:normal; font-weight:800; } #graph .graph-match.yes { color:#15803d;background:#dcfce7; } #graph .graph-match.no { color:#b91c1c;background:#fee2e2; }
+            #graph .graph-calendar-titlebar { display:flex; justify-content:space-between; align-items:end; margin-bottom:12px; padding:16px; border-radius:12px; background:#fff; }
+            #graph .graph-calendar-head,#graph .graph-calendar-grid { display:grid; grid-template-columns:repeat(7,1fr); }
+            #graph .graph-calendar-head span { padding:9px; color:var(--g-muted); font-size:12px; font-weight:700; text-align:center; }
+            #graph .graph-calendar-day { min-height:128px; padding:6px; border:solid var(--g-line); border-width:1px 0 0 1px; background:#fff; }
+            #graph .graph-calendar-day.today { background:#eff6ff; }
+            #graph .graph-day-number { width:28px;height:28px;border:0;border-radius:50%;background:transparent;cursor:pointer; }
+            #graph .graph-calendar-day.today .graph-day-number { background:var(--g-blue);color:#fff; }
+            #graph .graph-calendar-event,#graph .graph-more { display:block;width:100%;margin:3px 0;padding:4px 6px;overflow:hidden;border:0;border-left:3px solid #2563eb;border-radius:4px;background:#dbeafe;color:#1e3a8a;font-size:10px;text-align:left;text-overflow:ellipsis;white-space:nowrap;cursor:pointer; }
+            #graph .event-tentative { border-color:#d97706!important;background:#fef3c7!important;color:#92400e!important; } #graph .event-free { border-color:#059669!important;background:#d1fae5!important;color:#065f46!important; }
+            #graph .graph-agenda { display:grid; gap:8px; } #graph .graph-event-row { display:grid;grid-template-columns:180px 1fr auto;gap:16px;align-items:center;padding:13px;border:1px solid var(--g-line);border-left:4px solid #2563eb;border-radius:10px;background:#fff;text-align:left;cursor:pointer; }
+            #graph .graph-week-grid { display:grid;grid-template-columns:72px repeat(7,minmax(110px,1fr));overflow:auto;border:1px solid var(--g-line);border-radius:12px;background:#fff; } #graph .graph-week-cell { min-height:110px;padding:6px;border:solid var(--g-line);border-width:0 0 1px 1px; } #graph .graph-week-head { min-height:auto;background:#eef2f7;font-size:12px;font-weight:800;text-align:center; } #graph .graph-week-time { color:var(--g-muted);font-size:11px;text-align:right; }
+            #graph .graph-pagination { display:flex;justify-content:flex-end;align-items:center;gap:10px;margin-top:15px;color:var(--g-muted); } #graph .graph-pagination button { padding:7px 11px;border:1px solid var(--g-line);border-radius:8px;background:#fff;cursor:pointer; } #graph .graph-pagination button:disabled { opacity:.45;cursor:default; }
+            #graph .graph-live-dot { display:inline-block; width:8px; height:8px; border-radius:50%; background:#e11d48; margin-right:7px; box-shadow:0 0 0 0 rgba(225,29,72,0.5); animation:graphLivePulse 2s infinite; }
+            @keyframes graphLivePulse { 0%{box-shadow:0 0 0 0 rgba(225,29,72,0.45);} 70%{box-shadow:0 0 0 8px rgba(225,29,72,0);} 100%{box-shadow:0 0 0 0 rgba(225,29,72,0);} }
+            #graph .graph-live-list { display:flex; flex-direction:column; gap:14px; }
+            #graph .graph-live-card { background:#fff; border:1px solid var(--g-line); border-radius:14px; box-shadow:0 1px 3px #17203310; padding:18px 20px; }
+            #graph .graph-live-top { display:flex; justify-content:space-between; align-items:flex-start; gap:16px; margin-bottom:10px; }
+            #graph .graph-live-subject { font-size:16px; font-weight:700; margin:0 0 4px; }
+            #graph .graph-live-meta { color:var(--g-muted); font-size:12.5px; display:flex; gap:12px; flex-wrap:wrap; }
+            #graph .graph-live-meta a { color:var(--g-blue); text-decoration:none; font-weight:700; }
+            #graph .graph-live-meta a:hover { text-decoration:underline; }
+            #graph .graph-live-timeleft { font-size:12px; font-weight:700; color:#e11d48; background:#fee2e2; border-radius:999px; padding:4px 11px; white-space:nowrap; }
+            #graph .graph-live-flag { display:flex; align-items:center; gap:8px; padding:8px 11px; border-radius:9px; font-size:12.5px; flex-wrap:wrap; margin-bottom:8px; }
+            #graph .graph-live-flag.not-attending { background:#fef2f2; border:1px solid #fecaca; }
+            #graph .graph-live-flag.double-booked { background:#fffbeb; border:1px solid #fde68a; }
+            #graph .graph-live-flag-names { display:flex; gap:6px; flex-wrap:wrap; }
+            #graph .graph-live-flag-name { color:var(--g-blue); font-weight:700; cursor:pointer; background:none; border:0; padding:0; font-size:inherit; }
+            #graph .graph-live-flag-name:hover { text-decoration:underline; }
+            #graph .graph-live-flag-name-plain { color:var(--g-ink); font-weight:700; }
+            #graph .graph-live-flag-note { color:var(--g-muted); }
+            #graph .graph-live-summary { display:flex; gap:16px; padding:9px 0; margin-bottom:10px; border-top:1px solid var(--g-line); border-bottom:1px solid var(--g-line); font-size:12.5px; color:var(--g-muted); }
+            #graph .graph-live-summary b { color:var(--g-ink); }
+            #graph .graph-live-attendees { display:flex; flex-wrap:wrap; gap:8px; }
+            #graph .graph-live-chip { display:flex; align-items:center; gap:7px; padding:6px 10px 6px 8px; border-radius:999px; border:1px solid var(--g-line); font-size:12.5px; background:#f8fafc; cursor:pointer; transition:transform .12s,box-shadow .12s; color:var(--g-ink); }
+            #graph .graph-live-chip:not(:disabled):hover { transform:translateY(-1px); box-shadow:0 3px 10px #17203320; }
+            #graph .graph-live-chip:disabled { cursor:default; opacity:.85; }
+            #graph .graph-live-avatar { width:21px; height:21px; border-radius:50%; background:var(--g-blue); color:#fff; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:700; flex-shrink:0; }
+            #graph .graph-live-dot-status { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+            #graph .status-busy .graph-live-dot-status { background:#10b981; }
+            #graph .status-tentative .graph-live-dot-status { background:#f59e0b; }
+            #graph .status-free { border-color:#fecaca; background:#fef2f2; }
+            #graph .status-free .graph-live-dot-status { background:#e11d48; }
+            #graph .status-unknown { opacity:.65; }
+            #graph .status-unknown .graph-live-dot-status { background:#e2e8f0; border:1px solid #c7d0dc; }
+            #graph .graph-live-conflict { font-style:normal; }
+            #graph .graph-skeleton { border-radius:12px;background:linear-gradient(90deg,#eef2f7 25%,#f8fafc 50%,#eef2f7 75%);background-size:200% 100%;animation:graphShimmer 1.2s infinite; } #graph .graph-skeleton-card { height:132px; } #graph .graph-skeleton-row { height:90px;margin-bottom:10px; }
+            @keyframes graphShimmer { to { background-position:-200% 0; } }
+            .graph-drawer-overlay { position:fixed;z-index:1000;inset:0;background:#0f172a66;opacity:0;transition:opacity .18s; } .graph-drawer-overlay.open { opacity:1; } .graph-drawer { position:absolute;inset:0 0 0 auto;width:min(560px,94vw);padding:28px;overflow:auto;background:#fff;box-shadow:-20px 0 55px #0f172a33;transform:translateX(100%);transition:transform .22s; } .graph-drawer-overlay.open .graph-drawer { transform:none; } .graph-drawer-close { position:absolute;top:18px;right:18px;width:34px;height:34px;border:0;border-radius:50%;background:#eef2f7;font-size:22px;cursor:pointer; } .graph-detail-stack { display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:22px 0; } .graph-detail-row { padding:12px;border:1px solid #e2e8f0;border-radius:9px;background:#f8fafc; } .graph-detail-row span { display:block;margin-bottom:5px;color:#64748b;font-size:11px;text-transform:uppercase; } .graph-detail-row strong { overflow-wrap:anywhere; } .graph-mini-list { display:grid;gap:6px; } .graph-mini-list button,.graph-mini-list a { display:flex;justify-content:space-between;gap:10px;padding:10px;border:1px solid #e2e8f0;border-radius:8px;background:#fff;color:#172033;text-align:left;text-decoration:none;cursor:pointer; }
+            @media(max-width:1200px){#graph .graph-kpi-grid{grid-template-columns:repeat(3,1fr)}} @media(max-width:800px){#graph .graph-explorer{grid-template-columns:1fr}#graph .graph-subnav{display:flex;overflow:auto;border-right:0;border-bottom:1px solid var(--g-line)}#graph .graph-subnav-item{min-width:max-content}#graph .graph-command,#graph .graph-people-search{align-items:stretch;flex-direction:column}#graph .graph-kpi-grid{grid-template-columns:repeat(2,1fr)}#graph .graph-toolbar{flex-wrap:wrap}#graph .graph-calendar-day{min-height:90px}.graph-detail-stack{grid-template-columns:1fr}#graph .graph-task-stat-strip{grid-template-columns:repeat(2,1fr)}}
+            .graphd-stat-strip { display:flex; align-items:center; gap:16px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:16px 18px; margin-top:18px; }
+            .graphd-ring { --pct:0; --c:#94a3b8; width:58px; height:58px; border-radius:50%; flex-shrink:0; background:conic-gradient(var(--c) calc(var(--pct)*1%), #e5e7eb 0); display:grid; place-items:center; }
+            .graphd-ring-inner { width:44px; height:44px; border-radius:50%; background:#fff; display:grid; place-items:center; font-size:0.82rem; font-weight:800; }
+            .graphd-stat-tiles { display:flex; gap:18px; flex:1; }
+            .graphd-stat-tiles strong { display:block; font-size:1.1rem; }
+            .graphd-stat-tiles span { font-size:0.72rem; color:#64748b; text-transform:uppercase; letter-spacing:0.03em; }
+            .graphd-status-badges { display:flex; flex-wrap:wrap; gap:6px; margin:-8px 0 18px; }
+            .graphd-status-badge { font-size:0.72rem; font-weight:700; padding:3px 10px; border-radius:20px; }
+            .graphd-task-row { display:flex; align-items:center; gap:9px; }
+            .graphd-task-row--overdue { background:#fef2f2!important; border-color:#fecaca!important; }
+            .graphd-task-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+            .graphd-task-title { flex:1; }
+            .graphd-task-status { font-size:0.78rem; font-weight:700; white-space:nowrap; }
+            .graphd-tech-details { margin-top:18px; font-size:0.78rem; color:#94a3b8; }
+            .graphd-tech-details summary { cursor:pointer; font-weight:600; }
+            .graphd-tech-details .graph-detail-stack { margin:10px 0 0; }
+            .graphd-tech-details .graph-detail-row strong { font-size:0.78rem; color:#94a3b8; }
+            .graphd-badge-row { display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }
+            .graphd-badge-row .graphd-status-badge { display:inline-flex; align-items:center; gap:5px; font-size:0.78rem; padding:5px 12px; }
+            .graphd-badge-row .graphd-status-badge svg { width:13px; height:13px; }
+            .graphd-overdue-banner { display:flex; align-items:flex-start; gap:10px; background:#fef2f2; border:1px solid #fecaca; color:#991b1b; border-radius:10px; padding:12px 14px; margin-top:12px; font-size:0.84rem; line-height:1.5; }
+            .graphd-overdue-banner svg { width:15px; height:15px; flex-shrink:0; margin-top:1px; }
+          </style>
+          <div class="gx">
+            <div class="gx-head">
+              <div class="gx-title">
+                <span class="gx-logo" aria-hidden="true">⌘</span>
+                <div>
+                  <h2>Microsoft 365</h2>
+                  <div id="graphBreadcrumbs" class="graph-breadcrumbs">Microsoft Graph / Overview</div>
+                </div>
+              </div>
+              <div class="gh-header-actions">
+                <span id="graphRefreshLabel" class="refresh-pill"></span>
+                <input type="month" id="graphMonthPicker" class="month-picker-input">
+              <button id="graphRefreshButton" class="button refresh-btn company-only" type="button">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.5 9a9 9 0 0114.85-3.36L23 10M1 14l4.65 4.36A9 9 0 0020.5 15"/></svg>
+                Refresh now
+              </button>
+              </div>
+            </div>
+            <section class="graph-people-search gx-spot">
+              <span class="graph-search-icon" aria-hidden="true">⌕</span>
+              <div class="graph-search-field">
+                <input id="graphEmployeeSearch" type="search" placeholder="Employee 360° — search a person by name, ID or Microsoft 365 email" autocomplete="off" aria-label="Employee 360° search">
+                <button id="graphEmployeeSearchClear" type="button" hidden>Clear</button>
+                <kbd class="gx-kbd" aria-hidden="true">/</kbd>
+              </div>
+              <div id="graphEmployeeSuggestions" class="graph-employee-suggestions" hidden></div>
+            </section>
+            <div class="gx-body">
+              <nav class="gx-rail" aria-label="Microsoft 365 sections">
+                <p id="graphSummaryEyebrow" class="graph-org-eyebrow"></p>
+                <div id="graphSummaryCards" class="gx-rail-list"></div>
+              </nav>
+              <section class="graph-content gx-panel">
+                <header id="graphSectionHeader" class="graph-section-header"></header>
+                <div id="graphToolbar" class="graph-toolbar"></div>
+                <div id="graphWorkspace" class="graph-workspace"></div>
+                <div id="graphPagination" class="graph-pagination"></div>
+              </section>
+            </div>
+          </div>
+        </section>
+
+        <section id="integrations" class="view">
+          <div class="kpx-layout">
+            <div id="integrationRoadmapStats" class="kpx-grid"></div>
+            <div id="integrationGrid" class="int-grid"></div>
+            <div id="fusionCoverage" class="kpx-card fz-box"></div>
+            <p id="integrationNote" class="kpx-sub int-note"></p>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <div id="heatmapPopup" class="hmp-overlay" hidden>
+      <div id="heatmapPopupContent" class="hmp-popup"></div>
+    </div>
+
+    <div id="graphDrawerOverlay" class="graph-drawer-overlay" hidden>
+      <aside id="graphDrawer" class="graph-drawer" role="dialog" aria-modal="true" aria-label="Record details">
+        <button id="graphDrawerClose" class="graph-drawer-close" type="button" aria-label="Close">×</button>
+        <div id="graphDrawerContent"></div>
+      </aside>
+    </div>
+
+    <dialog id="employeeDialog">
+      <button id="closeDialog" aria-label="Close">&#x2715;</button>
+      <div id="employeeDetail"></div>
+    </dialog>
+
+    <dialog id="ghContribDialog">
+      <button id="closeGhContribDialog" class="dialog-close" aria-label="Close">x</button>
+      <div id="ghContribDetail"></div>
+    </dialog>
+
+    <!-- Tara Chatbot -->
+    <div id="taraBtn" class="tara-btn company-only" onclick="toggleTara()">
+      <span class="tara-btn-icon">✦</span>
+      <span class="tara-btn-label">Ask Tara</span>
+    </div>
+
+    <div id="taraPanel" class="tara-panel" hidden>
+      <div class="tara-header">
+        <div class="tara-header-info">
+          <div class="tara-avatar-wrap">
+            <span class="tara-avatar">✦</span>
+            <span class="tara-avatar-dot"></span>
+          </div>
+          <div>
+            <strong>Tara</strong>
+            <small>PeopleOps Intelligence · Online</small>
+          </div>
+        </div>
+        <div class="tara-header-actions">
+          <button class="tara-clear-btn" onclick="clearTara()" title="Clear chat">Clear</button>
+          <button class="tara-close" onclick="toggleTara()" aria-label="Close">✕</button>
+        </div>
+      </div>
+      <div id="taraMessages" class="tara-messages">
+        <div class="tara-msg-row">
+          <div class="tara-msg-row-avatar">✦</div>
+          <div class="tara-msg tara-msg--bot">
+            <p style="white-space:pre-wrap;margin:0">Hi! I'm Tara, your PeopleOps assistant. Ask me anything about your team's performance, attendance, or productivity.</p>
+          </div>
+        </div>
+      </div>
+      <div id="taraChips" class="tara-chips">
+        <button class="tara-chip" onclick="askTara('Who are the top 3 performers?')">🏆 Top performers</button>
+        <button class="tara-chip" onclick="askTara('Who was absent most this month?')">📅 Attendance issues</button>
+        <button class="tara-chip" onclick="askTara('Who has pending tasks?')">📋 Pending tasks</button>
+        <button class="tara-chip" onclick="askTara('Who is online on Teams right now?')">🟢 Online now</button>
+      </div>
+      <div class="tara-input-row">
+        <input id="taraInput" type="text" placeholder="Ask Tara anything…" onkeydown="if(event.key==='Enter') sendTaraMessage()">
+        <button class="tara-send" onclick="sendTaraMessage()" title="Send">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </button>
+      </div>
+      <div class="tara-disclosure">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <span>Powered by <strong>Groq AI</strong> · Relevant employee data is sent to Groq's cloud to generate responses.</span>
+      </div>
+    </div>
+
+    <!-- Team members attendance modal -->
+    <div class="team-modal-overlay" id="teamMembersModal" aria-modal="true" role="dialog">
+      <div class="team-modal" id="teamMembersModalInner">
+        <div class="team-modal-header">
+          <div class="team-modal-title-group">
+            <span class="team-modal-eyebrow">Team Members</span>
+            <div class="team-modal-name" id="teamModalName"></div>
+            <div class="team-modal-meta" id="teamModalMeta"></div>
+          </div>
+          <button class="team-modal-close" id="teamModalClose" aria-label="Close">✕</button>
+        </div>
+        <div class="team-modal-stats" id="teamModalStats"></div>
+        <div class="team-modal-col-head">
+          <span>Member</span><span>Attendance</span><span>Punctuality</span><span>Office Hrs</span>
+        </div>
+        <div class="team-modal-body" id="teamModalBody"></div>
+      </div>
+    </div>
+
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+    <script src="app.js?v=20261005-team2"></script>
+    <script src="leave-types.js?v=20261005-team2"></script>
+    <script src="work-location.js?v=20261005-team2"></script>
+    <script src="graph-explorer.js?v=20261005-team2"></script>
+  </body>
+</html>
