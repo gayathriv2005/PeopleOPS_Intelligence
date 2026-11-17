@@ -1,26 +1,34 @@
-# PeopleOPS Intelligence
+# PeopleOps Intelligence
 
-An employee performance intelligence dashboard using live API integrations for:
+## Project Overview
+PeopleOps Intelligence is a workforce analytics dashboard that brings employee, project, attendance, and collaboration information into one place. It helps authorized users review workforce activity and performance indicators using data from connected business systems.
 
-- Worklogix users, projects, tasks, and work activity
-- Microsoft Teams presence through Microsoft Graph
+## Technologies Used
+- **Frontend:** HTML, CSS, JavaScript
+- **Backend:** Python
+- **Integrations:** Worklogix, Microsoft Teams and Graph, GitHub, and GreytHR (depending on configuration)
+- **Deployment:** Render configuration
 
-## Run
+## Features
+- Workforce, employee, team, and project dashboards
+- KPI indicators for delivery, attendance, workload, and collaboration
+- Leave summaries and work-location information
+- Integrations with configured business APIs
+- Role-aware access and Microsoft sign-in, when configured
+- Demo and test-account options, when enabled
 
-From this folder:
+## Installation
 
-```powershell
-python .\backend\server.py
-```
+### Requirements
+- Python 3.10 or later
+- Credentials and access permissions for any integrations you want to enable
 
-Open:
-
-```text
-http://localhost:8000
-```
-
-The backend API is available at:
-
+### Setup
+1. Clone the repository and open its folder:
+   ```powershell
+   git clone https://github.com/gayathriv2005/PeopleOPS_Intelligence.git
+   cd PeopleOPS_Intelligence
+   ```
 ```text
 http://localhost:8000/api/health
 http://localhost:8000/api/data
